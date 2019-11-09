@@ -15,33 +15,11 @@
  */
 package org.apache.ibatis.session;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import javassist.util.proxy.Proxy;
-
 import org.apache.ibatis.BaseDataTest;
 import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.cache.impl.PerpetualCache;
-import org.apache.ibatis.domain.blog.Author;
-import org.apache.ibatis.domain.blog.Blog;
-import org.apache.ibatis.domain.blog.Comment;
-import org.apache.ibatis.domain.blog.DraftPost;
-import org.apache.ibatis.domain.blog.ImmutableAuthor;
-import org.apache.ibatis.domain.blog.Post;
-import org.apache.ibatis.domain.blog.Section;
-import org.apache.ibatis.domain.blog.Tag;
+import org.apache.ibatis.domain.blog.*;
 import org.apache.ibatis.domain.blog.mappers.AuthorMapper;
 import org.apache.ibatis.domain.blog.mappers.AuthorMapperWithMultipleHandlers;
 import org.apache.ibatis.domain.blog.mappers.AuthorMapperWithRowBounds;
@@ -53,6 +31,11 @@ import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.Reader;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 public class SqlSessionTest extends BaseDataTest {
   private static SqlSessionFactory sqlMapper;
@@ -152,6 +135,9 @@ public class SqlSessionTest extends BaseDataTest {
     SqlSession session = sqlMapper.openSession(TransactionIsolationLevel.SERIALIZABLE);
     try {
       List<Author> authors = session.selectList("org.apache.ibatis.domain.blog.mappers.AuthorMapper.selectAllAuthors");
+
+      System.out.println(authors);
+
       assertEquals(2, authors.size());
     } finally {
       session.close();
@@ -162,7 +148,7 @@ public class SqlSessionTest extends BaseDataTest {
   public void shouldFailWithTooManyResultsException() throws Exception {
     SqlSession session = sqlMapper.openSession(TransactionIsolationLevel.SERIALIZABLE);
     try {
-      session.selectOne("org.apache.ibatis.domain.blog.mappers.AuthorMapper.selectAllAuthors");
+      System.out.println("author is : "+(Author)session.selectOne("org.apache.ibatis.domain.blog.mappers.AuthorMapper.selectAllAuthors"));
     } finally {
       session.close();
     }
@@ -177,6 +163,9 @@ public class SqlSessionTest extends BaseDataTest {
       for(Map.Entry<Integer,Author> authorEntry : authors.entrySet()) {
         assertEquals(authorEntry.getKey(), (Integer) authorEntry.getValue().getId());
       }
+
+      System.out.println(authors);
+
     } finally {
       session.close();
     }
@@ -213,6 +202,9 @@ public class SqlSessionTest extends BaseDataTest {
           "org.apache.ibatis.domain.blog.mappers.AuthorMapper.selectAuthor", new Author(101));
       assertEquals(101, author.getId());
       assertEquals(Section.NEWS, author.getFavouriteSection());
+
+      System.out.println(author);
+
     } finally {
       session.close();
     }
@@ -226,6 +218,9 @@ public class SqlSessionTest extends BaseDataTest {
           "org.apache.ibatis.domain.blog.mappers.AuthorMapper.selectAuthor", new Author(101));
       assertEquals(101, authors.get(0).getId());
       assertEquals(Section.NEWS, authors.get(0).getFavouriteSection());
+
+      System.out.println(authors);
+
     } finally {
       session.close();
     }
@@ -239,6 +234,9 @@ public class SqlSessionTest extends BaseDataTest {
           "org.apache.ibatis.domain.blog.mappers.AuthorMapper.selectImmutableAuthor", new Author(101));
       assertEquals(101, author.getId());
       assertEquals(Section.NEWS, author.getFavouriteSection());
+
+      System.out.println(author);
+
     } finally {
       session.close();
     }

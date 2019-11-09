@@ -15,13 +15,6 @@
  */
 package org.apache.ibatis.session;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.Reader;
-
 import org.apache.ibatis.BaseDataTest;
 import org.apache.ibatis.domain.blog.Author;
 import org.apache.ibatis.domain.blog.mappers.AuthorMapper;
@@ -30,15 +23,25 @@ import org.apache.ibatis.io.Resources;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.Reader;
+
+import static org.junit.Assert.*;
+
 public class SqlSessionManagerTest extends BaseDataTest {
 
   private static SqlSessionManager manager;
 
   @BeforeClass
   public static void setup() throws Exception {
+    /**
+     * 创建数据源
+     */
     createBlogDataSource();
     final String resource = "org/apache/ibatis/builder/MapperConfig.xml";
     final Reader reader = Resources.getResourceAsReader(resource);
+    /**
+     * 获取 sqlSession 管理器 对象
+     */
     manager = SqlSessionManager.newInstance(reader);
   }
 

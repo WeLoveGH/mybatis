@@ -29,16 +29,45 @@ import java.util.Properties;
 
 public abstract class BaseDataTest {
 
+  /**
+   * 博客数据库——数据库配置信息，数据库驱动、数据库地址、用户名、密码
+   */
   public static final String BLOG_PROPERTIES = "org/apache/ibatis/databases/blog/blog-derby.properties";
+
+  /**
+   * 博客数据库——数据库DDL信息，删表、建表、建存储过程
+   */
   public static final String BLOG_DDL = "org/apache/ibatis/databases/blog/blog-derby-schema.sql";
+
+  /**
+   * 数据库数据信息，插入数据
+   */
   public static final String BLOG_DATA = "org/apache/ibatis/databases/blog/blog-derby-dataload.sql";
 
+  /**
+   * 博客数据库——数据库配置信息，数据库驱动、数据库地址、用户名、密码
+   */
   public static final String JPETSTORE_PROPERTIES = "org/apache/ibatis/databases/jpetstore/jpetstore-hsqldb.properties";
+
+  /**
+   * 博客数据库——数据库DDL信息，删表、建表、建存储过程
+   */
   public static final String JPETSTORE_DDL = "org/apache/ibatis/databases/jpetstore/jpetstore-hsqldb-schema.sql";
+
+  /**
+   * 数据库数据信息，插入数据
+   */
   public static final String JPETSTORE_DATA = "org/apache/ibatis/databases/jpetstore/jpetstore-hsqldb-dataload.sql";
 
   public static UnpooledDataSource createUnpooledDataSource(String resource) throws IOException {
+    /**
+     * 获取数据源的配置信息，配置文件以键值对的形式编辑
+     */
     Properties props = Resources.getResourceAsProperties(resource);
+
+    /**
+     * 构建非池化的数据源，并且通过数据源的配置填充数据源的相关信息，数据库驱动、数据库地址、数据库用户名、数据库密码
+     */
     UnpooledDataSource ds = new UnpooledDataSource();
     ds.setDriver(props.getProperty("driver"));
     ds.setUrl(props.getProperty("url"));
@@ -58,31 +87,83 @@ public abstract class BaseDataTest {
   }
 
   public static void runScript(DataSource ds, String resource) throws IOException, SQLException {
+
+    /**
+     * 获取数据库连接
+     */
     Connection connection = ds.getConnection();
     try {
+      /**
+       * 构建脚本执行器，并设置对应的参数
+       */
       ScriptRunner runner = new ScriptRunner(connection);
+
+      /**
+       * 自动提交
+       */
       runner.setAutoCommit(true);
+
+      /**
+       * 发生错误时是否停止
+       */
       runner.setStopOnError(false);
+
+      /**
+       * 日志输出器，如果不想打印日志，就输入 null
+       */
+      //runner.setLogWriter(new PrintWriter(System.out));
       runner.setLogWriter(null);
+
+      /**
+       * 发生错误时的日志输出器，如果不想打印日志，就输入 null
+       */
+      //runner.setErrorLogWriter(new PrintWriter(System.out));
       runner.setErrorLogWriter(null);
+
+      /**
+       * 执行脚本
+       */
       runScript(runner, resource);
     } finally {
+      /**
+       * 关闭连接
+       */
       connection.close();
     }
   }
 
   public static void runScript(ScriptRunner runner, String resource) throws IOException, SQLException {
+    /**
+     * 获取脚本阅读器
+     */
     Reader reader = Resources.getResourceAsReader(resource);
     try {
+      /**
+       * 执行脚本
+       */
       runner.runScript(reader);
     } finally {
+      /**
+       * 关闭脚本阅读器
+       */
       reader.close();
     }
   }
 
   public static DataSource createBlogDataSource() throws IOException, SQLException {
+    /**
+     * 创建数据源对象，通过数据源的配置文件来配置数据源的相关信息
+     */
     DataSource ds = createUnpooledDataSource(BLOG_PROPERTIES);
+
+    /**
+     * 执行数据库建表的脚本
+     */
     runScript(ds, BLOG_DDL);
+
+    /**
+     * 执行数据库插入数据的脚本
+     */
     runScript(ds, BLOG_DATA);
     return ds;
   }

@@ -381,6 +381,7 @@
   </build>
 
   <profiles>
+
     <profile>
       <id>java16</id>
       <activation>
@@ -420,6 +421,7 @@
         </plugins>
       </build>
     </profile>
+
     <profile>
       <id>java17</id>
       <activation>
@@ -446,5 +448,6 @@
         </pluginManagement>
       </build>
     </profile>
+
   </profiles>
 </project>

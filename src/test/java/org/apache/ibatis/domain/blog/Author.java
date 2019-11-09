@@ -123,6 +123,14 @@ public class Author implements Serializable {
 
   @Override
   public String toString() {
-    return "Author : " + id + " : " + username + " : " + email;
+    final StringBuilder sb = new StringBuilder("Author{");
+    sb.append("id=").append(id);
+    sb.append(", username='").append(username).append('\'');
+    sb.append(", password='").append(password).append('\'');
+    sb.append(", email='").append(email).append('\'');
+    sb.append(", bio='").append(bio).append('\'');
+    sb.append(", favouriteSection=").append(favouriteSection);
+    sb.append('}');
+    return sb.toString();
   }
 }

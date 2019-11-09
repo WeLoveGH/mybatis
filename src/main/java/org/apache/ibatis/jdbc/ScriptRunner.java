@@ -101,9 +101,15 @@ public class ScriptRunner {
   }
 
   public void runScript(Reader reader) {
+    /**
+     * 设置自动提交
+     */
     setAutoCommit();
 
     try {
+      /**
+       * 按行执行脚本
+       */
       if (sendFullScript) {
         executeFullScript(reader);
       } else {
@@ -139,6 +145,9 @@ public class ScriptRunner {
     try {
       BufferedReader lineReader = new BufferedReader(reader);
       String line;
+      /**
+       * 按行执行脚本
+       */
       while ((line = lineReader.readLine()) != null) {
         handleLine(command, line);
       }
@@ -197,6 +206,9 @@ public class ScriptRunner {
 
   private void handleLine(StringBuilder command, String line) throws SQLException {
     String trimmedLine = line.trim();
+    /**
+     * 注释掉的脚本不执行
+     */
     if (lineIsComment(trimmedLine)) {
       Matcher matcher = DELIMITER_PATTERN.matcher(trimmedLine);
       if (matcher.find()) {
@@ -207,6 +219,9 @@ public class ScriptRunner {
       command.append(line.substring(0, line.lastIndexOf(delimiter)));
       command.append(LINE_SEPARATOR);
       println(command);
+      /**
+       * 执行脚本命令
+       */
       executeStatement(command.toString());
       command.setLength(0);
     } else if (trimmedLine.length() > 0) {
@@ -226,13 +241,40 @@ public class ScriptRunner {
 
   private void executeStatement(String command) throws SQLException {
     boolean hasResults = false;
+    /**
+     * 构建执行语句的对象
+     */
     Statement statement = connection.createStatement();
+
+    /**
+     * 开启转义处理
+     * 如果 escape scan 为on(默认值)，驱动程序将在向数据库发送SQL语句之前执行 escape 替换。
+     */
     statement.setEscapeProcessing(escapeProcessing);
+
+    /**
+     * 脚本的本质就是SQL语句
+     */
     String sql = command;
+
+    /**
+     * 控制是否去掉回车换行
+     */
     if (removeCRs) {
       sql = sql.replaceAll("\r\n", "\n");
     }
+
+    /**
+     * 控制是否发生错误时，停止执行
+     *
+     * 1：发生异常时停止执行，就是拿到SQL的执行异常信息，然后抛出去
+     * 2：发生异常时继续执行，就是打印一下SQL的执行异常信息
+     */
+
     if (stopOnError) {
+      /**
+       * 执行SQL语句，这里可以看出 MyBatis 执行 SQL 的本质还是利用 JDK 的 JDBC 执行的
+       */
       hasResults = statement.execute(sql);
       if (throwWarning) {
         // In Oracle, CRATE PROCEDURE, FUNCTION, etc. returns warning
@@ -250,6 +292,10 @@ public class ScriptRunner {
         printlnError(message);
       }
     }
+
+    /**
+     * 打印执行结果
+     */
     printResults(statement, hasResults);
     try {
       statement.close();
@@ -260,18 +306,36 @@ public class ScriptRunner {
 
   private void printResults(Statement statement, boolean hasResults) {
     try {
+      /**
+       * 有结果就打印
+       */
       if (hasResults) {
+        /**
+         * 获取SQL语句的执行结果
+         */
         ResultSet rs = statement.getResultSet();
         if (rs != null) {
+          /**
+           * 获取SQL语句的执行结果的元信息
+           */
           ResultSetMetaData md = rs.getMetaData();
+          /**
+           * 获取执行结果的列数
+           */
           int cols = md.getColumnCount();
           for (int i = 0; i < cols; i++) {
+            /**
+             * 循环获取列名
+             */
             String name = md.getColumnLabel(i + 1);
             print(name + "\t");
           }
           println("");
           while (rs.next()) {
             for (int i = 0; i < cols; i++) {
+              /**
+               * 循环获取对应列的值
+               */
               String value = rs.getString(i + 1);
               print(value + "\t");
             }
