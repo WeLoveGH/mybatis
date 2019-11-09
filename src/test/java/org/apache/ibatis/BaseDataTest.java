@@ -22,6 +22,7 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -59,6 +60,12 @@ public abstract class BaseDataTest {
    */
   public static final String JPETSTORE_DATA = "org/apache/ibatis/databases/jpetstore/jpetstore-hsqldb-dataload.sql";
 
+  /**
+   * 创建非吃化的数据源对象
+   * @param resource
+   * @return
+   * @throws IOException
+   */
   public static UnpooledDataSource createUnpooledDataSource(String resource) throws IOException {
     /**
      * 获取数据源的配置信息，配置文件以键值对的形式编辑
@@ -76,6 +83,12 @@ public abstract class BaseDataTest {
     return ds;
   }
 
+  /**
+   * 创建池化的数据源
+   * @param resource
+   * @return
+   * @throws IOException
+   */
   public static PooledDataSource createPooledDataSource(String resource) throws IOException {
     Properties props = Resources.getResourceAsProperties(resource);
     PooledDataSource ds = new PooledDataSource();
@@ -86,6 +99,13 @@ public abstract class BaseDataTest {
     return ds;
   }
 
+  /**
+   * 执行脚本命令 —— 上层壳子
+   * @param ds
+   * @param resource
+   * @throws IOException
+   * @throws SQLException
+   */
   public static void runScript(DataSource ds, String resource) throws IOException, SQLException {
 
     /**
@@ -111,14 +131,14 @@ public abstract class BaseDataTest {
       /**
        * 日志输出器，如果不想打印日志，就输入 null
        */
-      //runner.setLogWriter(new PrintWriter(System.out));
-      runner.setLogWriter(null);
+      runner.setLogWriter(new PrintWriter(System.out));
+      //runner.setLogWriter(null);
 
       /**
        * 发生错误时的日志输出器，如果不想打印日志，就输入 null
        */
-      //runner.setErrorLogWriter(new PrintWriter(System.out));
-      runner.setErrorLogWriter(null);
+      runner.setErrorLogWriter(new PrintWriter(System.out));
+      //runner.setErrorLogWriter(null);
 
       /**
        * 执行脚本
@@ -132,6 +152,13 @@ public abstract class BaseDataTest {
     }
   }
 
+  /**
+   * 执行脚本命令 —— 底层逻辑
+   * @param runner
+   * @param resource
+   * @throws IOException
+   * @throws SQLException
+   */
   public static void runScript(ScriptRunner runner, String resource) throws IOException, SQLException {
     /**
      * 获取脚本阅读器
@@ -168,6 +195,12 @@ public abstract class BaseDataTest {
     return ds;
   }
 
+  /**
+   * 创建数据源
+   * @return
+   * @throws IOException
+   * @throws SQLException
+   */
   public static DataSource createJPetstoreDataSource() throws IOException, SQLException {
     DataSource ds = createUnpooledDataSource(JPETSTORE_PROPERTIES);
     runScript(ds, JPETSTORE_DDL);

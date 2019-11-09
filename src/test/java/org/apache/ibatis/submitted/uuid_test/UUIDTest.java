@@ -15,10 +15,6 @@
  */
 package org.apache.ibatis.submitted.uuid_test;
 
-import java.io.Reader;
-import java.sql.Connection;
-import java.util.UUID;
-
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -28,6 +24,10 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.Reader;
+import java.sql.Connection;
+import java.util.UUID;
 
 public class UUIDTest {
 
@@ -57,7 +57,10 @@ public class UUIDTest {
     SqlSession sqlSession = sqlSessionFactory.openSession();
     try {
       Mapper mapper = sqlSession.getMapper(Mapper.class);
-      User user = mapper.getUser(UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d"));
+      User user = mapper.getUser(UUID.fromString("eccb7b75-6021-4488-939a-9efe41f92879"));
+
+      System.out.println("user is : " + user);
+
       Assert.assertEquals("User1", user.getName());
     } finally {
       sqlSession.close();
@@ -72,6 +75,9 @@ public class UUIDTest {
       User user = new User();
       user.setId(UUID.randomUUID());
       user.setName("User2");
+
+      System.out.println("user is : " + user);
+
       mapper.insertUser(user);
     } finally {
       sqlSession.close();
