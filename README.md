@@ -25,8 +25,9 @@ Essentials
 
 add by godtrue
 
-*[中文文档](https://mybatis.org/mybatis-3/zh/index.html)
-*[测试调试的过程中会报 Error:java: Compilation failed: internal java compiler error](https://hello.blog.csdn.net/article/details/82119860)
+* [中文文档](https://mybatis.org/mybatis-3/zh/index.html)
+
+* [测试调试的过程中会报 Error:java: Compilation failed: internal java compiler error](https://hello.blog.csdn.net/article/details/82119860)
 
 通过调用相关的代码，发下如下事实：
 
@@ -51,5 +52,7 @@ add by godtrue
    2-6：通过SQLSession进行各种SQL操作
    
    2-7：然后解析结果，且返回
+   
+   2-8：源码也并不是那么难读，当然，需要一定的基础，特别是：数据结构与算法、所线程编程、网络编程、设计模式等知识的掌握
    
    
