@@ -29,17 +29,27 @@ add by godtrue
 *[测试调试的过程中会报 Error:java: Compilation failed: internal java compiler error](https://hello.blog.csdn.net/article/details/82119860)
 
 通过调用相关的代码，发下如下事实：
+
 1：MyBatis 仅是一个 ORM 持久化框架而已，底层操作数据库的实现还是通过JDK的JDBC
+
 2：MyBatis 实现功能的逻辑
+
    2-1：获取数据库的配置信息，数据库驱动、数据库地址、数据库用户名、数据库密码等 —— Configuration
+   
    2-2：获取SqlSessionFactoryBuilder —— SQL会话工厂的构造器
+   
    2-3：获取SqlSessionFactory —— SQL会话工厂
+   
    2-4：获取SqlSession —— SQL会话，
         注意，是一个动态代理的 sqlSession 功能增强的方法调用处理器，用于针对没有指定SQL会话的实例进行提交和回滚的增强
         这是 mybatis 的核心接口
+        
    2-4：获取Mapper —— 对象和表的映射关系，用于获取对应的SQL语句
+   
    2-5：开启事务控制，通过配置获取事务工厂，然后选择合适的事务
+   
    2-6：通过SQLSession进行各种SQL操作
+   
    2-7：然后解析结果，且返回
    
    
